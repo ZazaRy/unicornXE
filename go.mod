@@ -1,3 +1,3 @@
-module github.com/yourusername/unicornXE-Go
+module github.com/ZazaRy/unicornXE
 
 go 1.23.1
