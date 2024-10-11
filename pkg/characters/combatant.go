@@ -11,8 +11,10 @@ type BaseCombatant struct {
     Attack_roll int
     Damage float32
     Initiative int
-    Team string
+    Team int
 }
+
+
 
 func (m *BaseCombatant) Attack(target *BaseCombatant) {
     attackRoll := m.GetAttackRoll()

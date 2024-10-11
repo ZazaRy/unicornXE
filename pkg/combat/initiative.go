@@ -14,7 +14,12 @@ type Teams struct {
 
 
 func (t *Teams) AddToTracker(comb characters.BaseCombatant) {
-   t.Combatants = append(t.Combatants, comb)
+    comb.Initiative = rand.Intn(20) + comb.Initiative
+    t.Combatants = append(t.Combatants, comb)
+
+    fmt.Printf("%s has been added to the tracker with initiative %d\n", comb.Name, comb.Initiative)
+
+
 
 }
 
@@ -30,5 +35,4 @@ func RollInitiative(t Teams) func() string {
         turnIndex = (turnIndex + 1) % len(t.Combatants)
         return currentCombatant.GetName()
     }}
-
 
