@@ -3,9 +3,10 @@ import (
     "fmt"
     "math/rand"
 )
+
 type Coords struct{
-    x int
-    y int
+    X int
+    Y int
 }
 type BaseCombatant struct {
     Name string
@@ -20,21 +21,48 @@ type BaseCombatant struct {
 
 
 
-func (m *BaseCombatant) Attack(target *BaseCombatant) {
+func (m BaseCombatant) Attack(target BaseCombatant) BaseCombatant {
     attackRoll := m.GetAttackRoll()
     if attackRoll >= target.AC {
-        fmt.Printf("%s of Team %d attacks %s of Team %d for %f damage\n", m.Name, m.Team, target.Name, target.Team, m.Damage)
-        target.TakeDamage(m.Damage)
+        fmt.Printf("%s of Team %d attacks %s of Team %d and coords %v for %f damage\n", m.Name, m.Team, target.Name, target.Team, target.Coords, m.Damage)
+        fmt.Printf("Target HP before attack: %d\n", target.HP)
+
+        target = target.TakeDamage(m.Damage)
+
+        fmt.Printf("Target HP after attack: %d\n", target.HP)
     } else {
         fmt.Printf("%s misses %s\n", m.Name, target.Name)
     }
+    return target
 }
 
 
-func (p *BaseCombatant) GetPos() Coords{
-    return p.Coords
+
+
+func (p *BaseCombatant) GetPos() []int{
+    return []int{p.Coords.X, p.Coords.Y}
 }
 
+func (p *BaseCombatant) SetPos(x, y int){
+    p.Coords.X = x
+    p.Coords.Y = y
+}
+
+func (p* BaseCombatant) MoveLeft(x int){
+    p.Coords.X -= x
+}
+
+func (p* BaseCombatant) MoveRight(x int){
+    p.Coords.X += x
+}
+
+func (p* BaseCombatant) MoveUp(y int){
+    p.Coords.Y += y
+}
+
+func (p* BaseCombatant) MoveDown(y int){
+    p.Coords.Y -= y
+}
 
 func (n *BaseCombatant) GetName() string{
     return n.Name
@@ -69,13 +97,26 @@ func (t *BaseCombatant) RollInitiative() int{
     return roll
 }
 
-func (m *BaseCombatant) TakeDamage(damage float32) {
+func (m BaseCombatant) TakeDamage(damage float32) BaseCombatant {
+    fmt.Printf("HP of %s before damage is %d\n", m.Name, m.HP)
     m.HP -= int(damage)
-    if m.HP < 0{
+    if m.HP < 0 {
         m.HP = 0
     }
     fmt.Printf("%s takes %f damage. HP is now %d\n", m.Name, damage, m.HP)
+    return m
 }
+
+
+type Movement interface{
+    GetPos() Coords
+    SetPos(x, y int)
+    MoveLeft(x int)
+    MoveRight(x int)
+    MoveUp(y int)
+    MoveDown(y int)
+}
+
 
 type Combatant interface{
     Attack(target Combatant)

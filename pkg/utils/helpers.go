@@ -1,4 +1,4 @@
-package combat
+package utils
 
 import (
 	_"fmt"
@@ -29,16 +29,16 @@ func Any[T any](slice []T, condition func(T) bool) bool{
 
 
 func Min[T any](values []T, method func(T) int) T{
-    min := values[0]
+    minIndex := values[0]
     for i:=1; i < len(values); i++{
-        if method(values[i]) < method(min){
-            min = values[i]
+        if method(values[i]) < method(minIndex){
+            minIndex = values[i]
         }
     }
-    return min
+    return minIndex
 }
 
-func Max[T any](values []T, method func(T) int) T{
+func Max[T any](values []int, method func(int) int) int{
     max := values[0]
     for i:=1; i < len(values); i++{
         if method(values[i]) > method(max){
