@@ -22,6 +22,7 @@ func (t *Teams) AAA() bool{
 
 func (t *Teams) AAnA() bool{
     status := utils.Any(t.Combatants, func(x characters.BaseCombatant) bool{ return x.GetHP() > 0})
+    fmt.Println("Printing AAnA status ", status)
     return status
 }
 
@@ -39,12 +40,12 @@ func (t *Teams) TeamSplitter() ([]characters.BaseCombatant, []characters.BaseCom
     return teamOne, teamTwo
 }
 
-func (t *Teams) GetOpposingTeam(attackerTeamID int) (map[int][]int, error){
+func (t *Teams) GetTeamCoords(attackerTeamID int) (map[int][]int, error){
     length := len(t.Combatants)
-    opposingTeam := make(map[int][]int)
+    opposingTeam := make(map[int][]int, length/2)
     if t.AAnA(){
         for i:=0; i < length; i++{
-            if t.Combatants[i].Team != attackerTeamID && t.Combatants[i].HP > 0{
+            if t.Combatants[i].Team != attackerTeamID{
                 opposingTeam[i] = []int{t.Combatants[i].Coords.X, t.Combatants[i].Coords.Y}
             }
         }
@@ -62,7 +63,7 @@ func (t *Teams) GetOppsingTeamByIndex(attackerTeamID int) ([]int, error){
 
     if t.AAnA(){
         for i:=0; i < length; i++{
-            if t.Combatants[i].Team != attackerTeamID && t.Combatants[i].HP > 0{
+            if t.Combatants[i].Team != attackerTeamID{
                 opposingTeam = append(opposingTeam, i)
             }
             if len(opposingTeam) > 0 {
@@ -89,6 +90,9 @@ func InitOrder(teams []characters.BaseCombatant, size int) []characters.BaseComb
         teams[i].RollInitiative()
     }
     utils.QuickSort(teams, 0, size-1)
+    for i:=0; i<size; i++{
+        teams[i].SetID(i)
+    }
     return teams
 }
 

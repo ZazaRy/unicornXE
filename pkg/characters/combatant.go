@@ -8,23 +8,41 @@ type Coords struct{
     X int
     Y int
 }
+
+type Weapon struct{
+    Name string
+    //Property string
+    //Mastery
+    Damage int
+    Range int
+    //DamageType string
+}
+
+
+
 type BaseCombatant struct {
+    ID int
     Name string
     HP int
     AC int
+    NoAttacks int
     Attack_roll int
-    Damage float32
+    Weapon Weapon
+    Damage int
     Initiative int
     Team int
     Coords Coords
 }
 
+type Caster struct {
+    BaseCombatant
+    Spells map[string]map[string]map[any]any
+}
 
-
-func (m BaseCombatant) Attack(target BaseCombatant) BaseCombatant {
+func (m *BaseCombatant) Attack(target BaseCombatant) (int, BaseCombatant){
     attackRoll := m.GetAttackRoll()
     if attackRoll >= target.AC {
-        fmt.Printf("%s of Team %d attacks %s of Team %d and coords %v for %f damage\n", m.Name, m.Team, target.Name, target.Team, target.Coords, m.Damage)
+        fmt.Printf("%s of Team %d attacks %s of Team %d and coords %v for %d damage\n", m.Name, m.Team, target.Name, target.Team, target.Coords, m.Damage)
         fmt.Printf("Target HP before attack: %d\n", target.HP)
 
         target = target.TakeDamage(m.Damage)
@@ -33,11 +51,13 @@ func (m BaseCombatant) Attack(target BaseCombatant) BaseCombatant {
     } else {
         fmt.Printf("%s misses %s\n", m.Name, target.Name)
     }
-    return target
+    return target.ID, target
 }
 
 
-
+func (i *BaseCombatant) SetID(id int){
+    i.ID = id
+}
 
 func (p *BaseCombatant) GetPos() []int{
     return []int{p.Coords.X, p.Coords.Y}
@@ -83,7 +103,7 @@ func (atkRl *BaseCombatant) GetAttackRoll() int{
     return rand.Intn(20) + atkRl.Attack_roll
 }
 
-func (dmg *BaseCombatant) GetDMG() float32{
+func (dmg *BaseCombatant) GetDMG() int{
     return dmg.Damage
 }
 
@@ -97,13 +117,15 @@ func (t *BaseCombatant) RollInitiative() int{
     return roll
 }
 
-func (m BaseCombatant) TakeDamage(damage float32) BaseCombatant {
+
+func (m BaseCombatant) TakeDamage(damage int) BaseCombatant {
+    damage = rand.Intn(damage)
     fmt.Printf("HP of %s before damage is %d\n", m.Name, m.HP)
     m.HP -= int(damage)
     if m.HP < 0 {
         m.HP = 0
     }
-    fmt.Printf("%s takes %f damage. HP is now %d\n", m.Name, damage, m.HP)
+    fmt.Printf("%s takes %d damage. HP is now %d\n", m.Name, damage, m.HP)
     return m
 }
 
