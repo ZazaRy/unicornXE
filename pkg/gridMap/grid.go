@@ -26,22 +26,17 @@ func (g *Grid) GetL2(xAtk, yAtk, xDef, yDef int) int{
 
 
 
-func (g *Grid) GetNearestEnemy(attacker map[int]characters.Coords, opposingTeam map[int][]int) characters.BaseCombatant{
+func (g *Grid) GetNearestEnemy(attacker characters.Coords, opposingTeam map[int][]int) characters.BaseCombatant{
     maxDistance := math.MaxInt32
     var nearestCombatant characters.BaseCombatant
-    var attackerX, attackerY int
-    for _, attackerPos := range attacker {
-        attackerX = attackerPos.X
-        attackerY = attackerPos.Y
-    }
     for combatantIndex, pos := range opposingTeam {
-        distance := g.GetL2(attackerX, attackerY, pos[0], pos[1])
+        distance := g.GetL2(attacker.X, attacker.Y, pos[0], pos[1])
 
         if distance <  maxDistance{
             maxDistance = distance
             nearestCombatant = g.Occupants[combatantIndex]
         }
-        fmt.Printf("Attacker positions x: %d and y: %d\n", attackerX, attackerY)
+        fmt.Printf("Attacker positions x: %d and y: %d\n", attacker.X, attacker.Y)
         fmt.Printf("Defender x: %d and y: %d\n", pos[0], pos[1])
         fmt.Printf("Distance between attacker and defender is: %d\n", distance)
     }

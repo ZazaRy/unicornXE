@@ -93,6 +93,9 @@ func InitOrder(teams []characters.BaseCombatant, size int) []characters.BaseComb
     for i:=0; i<size; i++{
         teams[i].SetID(i)
     }
+    for i:=0; i<size; i++{
+        fmt.Printf("Initiative for %s with ID %d is: %d\n", teams[i].GetName(), teams[i].ID, teams[i].GetInitiative())
+    }
     return teams
 }
 

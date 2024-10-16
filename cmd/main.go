@@ -84,12 +84,10 @@ func main() {
     combatants = append(combatants, player1, player2, player3, player4)
 
     combMap := make(map[int]characters.BaseCombatant, 4)
+    for i, v := range combatants {
+        combMap[i] = v
+    }
 
-    combMap[player1.ID] = player1
-    combMap[player2.ID] = player2
-    combMap[player3.ID] = player3
-    combMap[player4.ID] = player4
-    // PICK UP FROM HERE TOMORROW
     grid := gridMap.Grid{
         Width: 600,
         Height: 600,
@@ -113,14 +111,10 @@ func main() {
             fmt.Println(errOP)
             break
         }
-
-        nextAttackerCoords := make(map[int]characters.Coords, 1)
-        nextAttackerCoords[nextAttacker.Team] = nextAttacker.Coords
-
-        nearestDefender := grid.GetNearestEnemy(nextAttackerCoords, opposingTeam)
+        nearestDefender := grid.GetNearestEnemy(nextAttacker.Coords, opposingTeam)
 
         upDefenderID, updatedDefender := nextAttacker.Attack(nearestDefender)
 
-        combMap[upDefenderID] = updatedDefender
+        combatants[upDefenderID] = updatedDefender
     }
 }
