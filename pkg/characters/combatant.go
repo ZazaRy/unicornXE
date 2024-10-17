@@ -4,10 +4,21 @@ import (
     "math/rand"
 )
 
+
 type Coords struct{
     X int
     Y int
 }
+
+type StatArray struct{
+    Str int
+    Dex int
+    Con int
+    Int int
+    Wis int
+    Cha int
+}
+
 
 type Weapon struct{
     Name string
@@ -23,8 +34,11 @@ type Weapon struct{
 type BaseCombatant struct {
     ID int
     Name string
+    Statarray StatArray
     HP int
     AC int
+    Proficiency int
+    PrimaryStat int
     NoAttacks int
     Attack_roll int
     Weapon Weapon
@@ -36,7 +50,7 @@ type BaseCombatant struct {
 
 type Caster struct {
     BaseCombatant
-    Spells map[string]map[string]map[any]any
+    Spells SpellBook
 }
 
 func (m *BaseCombatant) Attack(target BaseCombatant) (int, BaseCombatant){
@@ -54,6 +68,28 @@ func (m *BaseCombatant) Attack(target BaseCombatant) (int, BaseCombatant){
     return target.ID, target
 }
 
+
+
+func (c *Caster) GetSaveDC(int) (int, error){
+    var abilityscore int
+    switch c.PrimaryStat {
+    case STR:
+        abilityscore = c.Statarray.Str
+    case DEX:
+        abilityscore = c.Statarray.Dex
+    case CON:
+        abilityscore = c.Statarray.Con
+    case INT:
+        abilityscore = c.Statarray.Int
+    case WIS:
+        abilityscore = c.Statarray.Wis
+    case CHA:
+        abilityscore = c.Statarray.Cha
+    default:
+        return 0, fmt.Errorf("Invalid PrimaryStat")
+    }
+    return 8 + c.Proficiency + (abilityscore-10)/2, nil
+}
 
 func (i *BaseCombatant) SetID(id int){
     i.ID = id
@@ -145,9 +181,12 @@ type Combatant interface{
     TakeDamage(damage float32)
     GetHP() int
     GetAC() int
-    GetAttackRoll() int
-    GetInitiative() int
+    GetSaveDC() (int, error)
     GetName() string
     GetTeam() int
     RollInitiative() int
+}
+
+type Mage interface{
+    GetSaveDC() (int, error)
 }
